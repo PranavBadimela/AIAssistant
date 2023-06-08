@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">
+  <g id="Group_16202" data-name="Group 16202" transform="translate(-0.108)">
+    <circle id="Ellipse_154" data-name="Ellipse 154" cx="22" cy="22" r="22" transform="translate(0.108)" fill="red"/>
+    <g id="Icon_feather-mic" data-name="Icon feather-mic" transform="translate(15.028 10.306)">
+      <path id="Path_24649" data-name="Path 24649" d="M16.722,1.5A3.222,3.222,0,0,0,13.5,4.722v8.591a3.222,3.222,0,0,0,6.443,0V4.722A3.222,3.222,0,0,0,16.722,1.5Z" transform="translate(-9.205 -1.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <path id="Path_24650" data-name="Path 24650" d="M22.534,15v2.148a7.517,7.517,0,1,1-15.034,0V15" transform="translate(-7.5 -5.335)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <path id="Path_24651" data-name="Path 24651" d="M18,28.5v4.3" transform="translate(-10.483 -9.17)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <path id="Path_24652" data-name="Path 24652" d="M12,34.5h8.591" transform="translate(-8.778 -10.875)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    </g>
+  </g>
+</svg>

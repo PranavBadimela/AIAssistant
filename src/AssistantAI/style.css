@@ -1,0 +1,239 @@
+* {
+  margin: 0px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.main-container {
+  background-color: #f4f6fa;
+  min-height: 100vh;
+}
+
+.nav-bar {
+  background-color: #ffffff;
+  height: 60px;
+  padding: 10px 55px;
+  width: 100%;
+}
+
+.company-logo {
+  width: 179px;
+  height: 40px;
+}
+
+.main-assistant-container {
+  padding: 30px 60px;
+}
+
+.assistant-container-items {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.title-text {
+  font-size: 15px;
+  color: #080326;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+}
+
+.para-text {
+  font-size: 13px;
+  color: #080326;
+  font-weight: 300;
+  font-family: "Poppins", sans-serif;
+}
+
+.para-text1 {
+  font-size: 11px;
+  color: #626c7d;
+  font-family: "Poppins", sans-serif;
+}
+
+.button-container {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.file-name {
+  font-size: 13px;
+  color: #080326;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+}
+
+.upload-btn {
+  width: 100px;
+  height: 35px;
+  background: #ff0000 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 6px #0000001a;
+  border-radius: 10px;
+  opacity: 1;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  color: #fff;
+  margin-top: 10px;
+}
+
+.left-upload-container {
+  width: 50%;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 10px 30px #0000000f;
+  border-radius: 12px;
+  opacity: 1;
+  padding: 10px 20px;
+  margin-right: 20px;
+}
+
+.drop-down-container select {
+  width: 288px;
+  height: 44px;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 2px solid #eff1f4;
+  border-radius: 10px;
+  opacity: 1;
+  outline: none;
+  margin-top: 15px;
+}
+
+.drag-and-drop-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 124px;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  border: 2px dashed #d0d0d0;
+  border-radius: 10px;
+  opacity: 1;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.right-container {
+  width: 50%;
+  height: 330px;
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 10px 30px #0000000f;
+  border-radius: 12px;
+  opacity: 1;
+  padding: 10px 20px;
+}
+
+.voice-input-nav-section {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.text-input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  background: #f4f5f6 0% 0% no-repeat padding-box;
+  border-radius: 10px;
+  opacity: 1;
+  padding: 10px;
+}
+
+.mic-icon {
+  height: 40px;
+  margin-left: 20px;
+}
+
+.search-icon {
+  height: 20px;
+}
+
+.input-text {
+  width: 95%;
+  height: 40px;
+  border: none;
+  outline: none;
+  background: #f4f5f6 0% 0% no-repeat padding-box;
+  padding: 5px;
+  font-size: 15px;
+}
+
+.hr-line {
+  border: 1.5px solid #eff1f4;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.answer-btn {
+  width: 91px;
+  height: 34px;
+  background: #eff1f4 0% 0% no-repeat padding-box;
+  border-radius: 6px;
+  opacity: 1;
+  outline: none;
+  border: none;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+span {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+p {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.mic-icon.active {
+  border: 2px solid blue !important;
+  border-radius: 30px;
+}
+
+.bottom-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.invalid {
+  color: red;
+  font-weight: bold;
+}
+
+.bottom-right-container {
+  width: 50%;
+  /* height: 330px; */
+  background: #ffffff 0% 0% no-repeat padding-box;
+  box-shadow: 0px 10px 30px #0000000f;
+  border-radius: 12px;
+  opacity: 1;
+  padding: 10px 20px;
+}
+
+.testing {
+  height: 150px;
+  overflow: auto;
+}
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 5px;
+}

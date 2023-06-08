@@ -14,7 +14,7 @@ const MyAssist = () => {
   const [file, setFile] = useState(null);
   const [customerCode, setCustomerCode] = useState("");
   const [customerName, setCustomerName] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
+  // const [selectedOption, setSelectedOption] = useState("");
 
   // console.log(selectedOption)
 
@@ -118,7 +118,7 @@ const MyAssist = () => {
   };
 
   const handleDropdownChange = (e) => {
-    setSelectedOption(e.target.value);
+    // setSelectedOption(e.target.value);
 
     if (e.target.value === "option1") {
       setCustomerCode("CM2");
@@ -167,10 +167,10 @@ const MyAssist = () => {
                 id="dropdown"
                 onChange={handleDropdownChange}
               >
-                <option value="">Select an option</option>
+                <option value="">Select Product Name</option>
                 <option value="option1">CM2</option>
                 <option value="option2">Cargo Hub</option>
-                <option value="option3">FlexiVan!</option>
+                <option value="option3">FlexiVan</option>
                 <option value="option4">TimeSheet</option>
               </select>
             </div>

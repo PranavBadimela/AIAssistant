@@ -1,9 +1,11 @@
 import MyAssist from "./MyAssist";
+import AssistantAI from "./AssistantAI"
 
 const App = () => {
   return (
     <div>
-      <MyAssist />
+      {/* <MyAssist /> */}
+      <AssistantAI/>
     </div>
   );
 };
