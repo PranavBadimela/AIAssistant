@@ -1,26 +1,29 @@
-// import React from "react";
 import { useState, useEffect } from "react";
 import Logo from "../assets/Logo.svg";
 import Upload from "../assets/Upload.svg";
 import MicIcon from "../assets/MicIcon.svg";
 import SearchIcon from "../assets/searchIcon.svg";
+import { MdDelete } from "react-icons/md";
 import "./style.css";
 
 const AssistantAI = () => {
   const [transcript, setTranscript] = useState("");
+
+  // console.log(transcript2)
   const [inputText, setInputText] = useState("");
+
   const [answer, setAnswer] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
-  // const [buttonText, setButtonText] = useState("Say Something");
+
+  // const [isRecording, setIsRecording] = useState(false);
   const [recognitionInstance, setRecognitionInstance] = useState(null);
-  const [file, setFile] = useState(null);
+
   const [customerCode, setCustomerCode] = useState("");
-  const [customerName, setCustomerName] = useState("");
-  const [selectedFileName, setSelectedFileName] = useState("No file chosen");
   const [micColor, setMicColor] = useState("");
-  const [excelFile, setExcelFile] = useState(null);
-  const [selectedExcelFileName, setSelectedExcelFileName] =
-    useState("No file chosen");
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedFileName, setUploadedFileName] = useState("No file chosen");
 
   useEffect(() => {
     const recognition = new window.webkitSpeechRecognition();
@@ -29,7 +32,7 @@ const AssistantAI = () => {
     recognition.lang = "en-US";
 
     recognition.onresult = (event) => {
-      let finalTranscript = "";
+      let finalTranscript = ""; //here Iam storing my speech input EX:- Hi Hello
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
@@ -38,31 +41,33 @@ const AssistantAI = () => {
         }
       }
 
+      // console.log(transcript);
+      // console.log(finalTranscript);
+
       setTranscript(finalTranscript);
     };
+
+    // console.log(recognition);
 
     setRecognitionInstance(recognition);
   }, []);
 
   const recordAudio = () => {
     setAnswer("");
-    setIsRecording(!isRecording);
-    // setButtonText("Recording...");
     setMicColor("active");
     recognitionInstance.start();
   };
 
   const stopAudio = async () => {
-    // setButtonText("Say Something");
-    setIsRecording(!isRecording);
     recognitionInstance.stop();
     setInputText("");
     setTranscript("");
     setMicColor("");
+    setIsLoading(true);
 
     try {
       const response = await fetch(
-        `https://aiassistantapi.mindwavetech.com/api/aiapis/answers?question=${transcript}${inputText}`
+        `https://genaiapi.ezinnovation.com/api/aiapis/answers?question=${transcript}${inputText}`
       );
 
       const data = await response.json();
@@ -76,46 +81,75 @@ const AssistantAI = () => {
       setAnswer(transcript);
       window.speechSynthesis.speak(utterance);
     }
+
+    setIsLoading(false);
   };
 
   const handleInputChange = (e) => {
     setInputText(e.target.value);
+    setAnswer("");
   };
 
   const HandleFile = (e) => {
-    let file = e.target.files[0];
-    setFile(file);
-
-    setSelectedFileName(file ? file.name : "No file chosen");
-
-    const fileName = file.name;
-
-    setCustomerName(fileName);
+    const file = e.target.files[0] || e.dataTransfer.files[0];
+    setUploadedFile(file);
 
     if (
       file &&
       (file.type === "text/plain" || file.type === "application/pdf")
     ) {
-      setSelectedFileName(file ? file.name : "No file chosen");
+      setUploadedFileName(file.name);
     } else {
-      setSelectedFileName("*Invalid file format please select txt or pdf");
+      setUploadedFileName("*Invalid file format, please select txt or pdf");
     }
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+
+    const extensions = ["txt", "pdf"];
+    const fileExtensions = file.name.split(".").pop().toLowerCase();
+
+    if (extensions.includes(fileExtensions)) {
+      setUploadedFile(file);
+      setUploadedFileName(file ? file.name : "No file uploaded");
+    } else {
+      setUploadedFileName("*Invalid file format, please select txt or pdf");
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDelete = () => {
+    setUploadedFile(null);
+    setUploadedFileName("No file chosen");
+  };
+
   const handleUpload = async () => {
-    // Check if the selected file is .txt or .pdf
     if (
-      file &&
-      (file.type === "text/plain" || file.type === "application/pdf")
+      uploadedFile &&
+      (uploadedFile.type === "text/plain" ||
+        uploadedFile.type === "application/pdf")
     ) {
       const formData = new FormData();
       formData.append("customerCode", customerCode);
-      formData.append("customerName", customerName);
-      formData.append("file", file);
+      formData.append("customerName", uploadedFileName);
+      formData.append("file", uploadedFile);
 
       try {
         const response = await fetch(
-          "https://aiassistantapi.mindwavetech.com/api/aiapis/upload_customer_document/",
+          "https://genaiapi.ezinnovation.com/api/aiapis/upload_customer_document/",
           {
             method: "POST",
             body: formData,
@@ -136,37 +170,6 @@ const AssistantAI = () => {
     }
   };
 
-  const handleExcelFile = (e) => {
-    let file = e.target.files[0];
-    setExcelFile(file);
-
-    setSelectedExcelFileName(file ? file.name : "No file chosen");
-  };
-
-  const handleUploadExcelFile = async () => {
-    const excelFormData = new FormData();
-    excelFormData.append("file", excelFile);
-
-    try {
-      const response = await fetch(
-        "https://aiassistantapi.mindwavetech.com/api/aiapis/upload_excel_document/",
-        {
-          method: "POST",
-          body: excelFormData,
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Upload successful:", data);
-      } else {
-        console.log("Upload failed:");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleDropdownChange = (e) => {
     // setSelectedOption(e.target.value);
 
@@ -182,8 +185,6 @@ const AssistantAI = () => {
       setCustomerCode("CM2");
     }
   };
-
-  // const micColor = isRecording ? "redd" : "orange";
 
   return (
     <div className="main-container">
@@ -214,10 +215,16 @@ const AssistantAI = () => {
               </select>
             </div>
 
-            <div className="drag-and-drop-container">
+            <div
+              className="drag-and-drop-container"
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+            >
               <div>
                 <label htmlFor="file-input">
-                  <img src={Upload} alt="Upload" />
+                  <img src={Upload} alt="Upload" className="upload-icon" />
                 </label>
 
                 <input
@@ -234,19 +241,30 @@ const AssistantAI = () => {
               </div>
             </div>
 
+            {uploadedFile &&
+              uploadedFileName !==
+                "*Invalid file format, please select txt or pdf" && (
+                <div className="show-uploaded-file">
+                  <p className="file-name">{uploadedFileName}</p>
+                  <MdDelete
+                    className="delete-file-btn"
+                    onClick={handleDelete}
+                  />
+                </div>
+              )}
+
             <div className="button-container">
               <p
                 className={
-                  selectedFileName ===
-                  "*Invalid file format please select txt or pdf"
+                  uploadedFileName ===
+                  "*Invalid file format, please select txt or pdf"
                     ? "file-name invalid"
                     : "file-name"
                 }
               >
-                {selectedFileName}
+                {uploadedFileName}
               </p>
 
-              {/* <p className="file-name">{selectedFileName}</p> */}
               <button className="upload-btn" onClick={handleUpload}>
                 Upload
               </button>
@@ -265,7 +283,11 @@ const AssistantAI = () => {
                   onChange={handleInputChange}
                   placeholder="Text Here"
                 />
-                <img src={SearchIcon} className="search-icon" />
+                <img
+                  src={SearchIcon}
+                  className="search-icon"
+                  onClick={stopAudio}
+                />
               </div>
 
               <div>
@@ -298,6 +320,14 @@ const AssistantAI = () => {
                 </p>
               )}
 
+              {isLoading && (
+                <div className="loader">
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                  <div className="dot"></div>
+                </div>
+              )}
+
               {answer && (
                 <p className="testing">
                   <span className="answer">Answer:</span> {answer}
@@ -308,41 +338,6 @@ const AssistantAI = () => {
         </div>
 
         {/* Bottom Container */}
-
-        <div className="bottom-container">
-          <div className="left-upload-container">
-            <p className="title-text">Upload Excel Files</p>
-
-            <div className="drag-and-drop-container">
-              <div>
-                <label htmlFor="excel-file-input">
-                  <img src={Upload} alt="Upload" />
-                </label>
-
-                <input
-                  type="file"
-                  id="excel-file-input"
-                  name="excelFile"
-                  className="hidden-file-input"
-                  onChange={handleExcelFile}
-                />
-                <p className="para-text">
-                  Drag & Drop or Choose file to Upload
-                </p>
-                <p className="para-text1">Supported formats XLS</p>
-              </div>
-            </div>
-
-            <div className="button-container">
-              <p className="file-name">{selectedExcelFileName}</p>
-              <button className="upload-btn" onClick={handleUploadExcelFile}>
-                Upload
-              </button>
-            </div>
-          </div>
-
-          <div className="bottom-right-container"></div>
-        </div>
       </div>
     </div>
   );

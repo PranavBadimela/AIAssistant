@@ -1,11 +1,13 @@
-import MyAssist from "./MyAssist";
-import AssistantAI from "./AssistantAI"
+import AssistantAI from "./AssistantAI";
+import UserCase2 from "./UserCase2";
+import UserCase3 from "./UserCase3";
 
 const App = () => {
   return (
     <div>
-      {/* <MyAssist /> */}
-      <AssistantAI/>
+      <AssistantAI />
+      <UserCase2 />
+      <UserCase3 />
     </div>
   );
 };
