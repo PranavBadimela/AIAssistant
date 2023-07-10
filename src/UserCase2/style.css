@@ -9,7 +9,7 @@
 }
 
 .main-assistant-cas2-container {
-  padding: 10px 60px;
+  padding: 10px 0px;
 }
 
 .title-text {
@@ -143,19 +143,6 @@
   margin-bottom: 20px;
 }
 
-.answer-btn {
-  width: 91px;
-  height: 34px;
-  background: #eff1f4 0% 0% no-repeat padding-box;
-  border-radius: 6px;
-  opacity: 1;
-  outline: none;
-  border: none;
-  margin-bottom: 15px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
 span {
   font-family: "Poppins", sans-serif;
   font-size: 13px;
@@ -179,7 +166,7 @@ p {
 .bottom-container {
   display: flex;
   justify-content: space-between;
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 .invalid {
@@ -197,9 +184,10 @@ p {
   padding: 10px 20px;
 }
 
-.testing {
-  height: 150px;
+.answer-case2 {
+  height: 93px;
   overflow: auto;
+  margin-top: 10px;
 }
 ::-webkit-scrollbar {
   width: 4px;
@@ -244,6 +232,7 @@ p {
   width: 5px;
   height: 5px;
   background-color: #ff0000;
+  color: rgb(41, 184, 41);
   border-radius: 50%;
   margin: 0 5px;
   animation: wave-animation 1s ease-in-out infinite;

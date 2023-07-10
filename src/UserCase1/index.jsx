@@ -1,29 +1,26 @@
 import { useState, useEffect } from "react";
-import Logo from "../assets/Logo.svg";
 import Upload from "../assets/Upload.svg";
 import MicIcon from "../assets/MicIcon.svg";
 import SearchIcon from "../assets/searchIcon.svg";
 import { MdDelete } from "react-icons/md";
+import UserCase2 from "../UserCase2";
+// import UserCase3 from "../UserCase3";
 import "./style.css";
+// import NavBar from "../NavBar";
 
-const AssistantAI = () => {
+const UserCase1 = () => {
   const [transcript, setTranscript] = useState("");
-
-  // console.log(transcript2)
   const [inputText, setInputText] = useState("");
-
+  console.log(inputText);
   const [answer, setAnswer] = useState("");
-
-  // const [isRecording, setIsRecording] = useState(false);
   const [recognitionInstance, setRecognitionInstance] = useState(null);
-
   const [customerCode, setCustomerCode] = useState("");
   const [micColor, setMicColor] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [uploadedFile, setUploadedFile] = useState(null);
   const [uploadedFileName, setUploadedFileName] = useState("No file chosen");
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [questionText, setQuestionText] = useState("");
 
   useEffect(() => {
     const recognition = new window.webkitSpeechRecognition();
@@ -50,18 +47,28 @@ const AssistantAI = () => {
     // console.log(recognition);
 
     setRecognitionInstance(recognition);
+
+    window.onbeforeunload = () => {
+      window.speechSynthesis.cancel();
+    };
+
+    return () => {
+      window.onbeforeunload = null;
+    };
   }, []);
 
   const recordAudio = () => {
     setAnswer("");
     setMicColor("active");
+    setInputText("");
+    setQuestionText("");
     recognitionInstance.start();
   };
 
   const stopAudio = async () => {
     recognitionInstance.stop();
-    setInputText("");
-    setTranscript("");
+    // setInputText("");
+    // setTranscript("");
     setMicColor("");
     setIsLoading(true);
 
@@ -85,9 +92,21 @@ const AssistantAI = () => {
     setIsLoading(false);
   };
 
+  const handleEnterKey = (e) => {
+    if (e.key === "Enter") {
+      stopAudio();
+    }
+  };
+
   const handleInputChange = (e) => {
     setInputText(e.target.value);
+    setQuestionText(e.target.value);
     setAnswer("");
+    setTranscript("");
+  };
+
+  const handleInputHover = () => {
+    setInputText("");
   };
 
   const HandleFile = (e) => {
@@ -99,8 +118,10 @@ const AssistantAI = () => {
       (file.type === "text/plain" || file.type === "application/pdf")
     ) {
       setUploadedFileName(file.name);
+      setUploadSuccess(false);
     } else {
       setUploadedFileName("*Invalid file format, please select txt or pdf");
+      setUploadSuccess(false);
     }
   };
 
@@ -114,8 +135,10 @@ const AssistantAI = () => {
     if (extensions.includes(fileExtensions)) {
       setUploadedFile(file);
       setUploadedFileName(file ? file.name : "No file uploaded");
+      setUploadSuccess(false);
     } else {
       setUploadedFileName("*Invalid file format, please select txt or pdf");
+      setUploadSuccess(false);
     }
   };
 
@@ -159,11 +182,16 @@ const AssistantAI = () => {
         if (response.ok) {
           const data = await response.json();
           console.log("Upload successful:", data);
+          setUploadSuccess(true);
+          setUploadedFile(null);
+          setUploadedFileName("No file chosen");
         } else {
           console.log("Upload failed:");
+          setUploadSuccess(false);
         }
       } catch (error) {
         console.log("Error occurred while uploading:", error);
+        setUploadSuccess(false);
       }
     } else {
       console.log("Invalid file format. Only .txt and .pdf files are allowed.");
@@ -188,30 +216,33 @@ const AssistantAI = () => {
 
   return (
     <div className="main-container">
-      <div className="nav-bar">
+      {/* <div className="nav-bar">
         <img src={Logo} className="company-logo" />
-      </div>
+
+        <div className="nav-bar-items">
+          <p className="nav-bar-item">Technical Use Cases</p>
+          <p className="nav-bar-item">Business Use Cases</p>
+        </div>
+      </div> */}
 
       <div className="main-assistant-container">
-        <p className="title-text">AI Assistant</p>
+        <p className="title-text">Use Case 1 <span className="suffix-text">(Txt, PDF Files)</span></p>
 
         <div className="assistant-container-items">
           {/* upload-container */}
           <div className="left-upload-container">
-            <p className="title-text">Upload Documents</p>
-
             <div className="drop-down-container">
               <select
                 name="dropdown"
                 id="dropdown"
                 onChange={handleDropdownChange}
               >
-                <option value="">Select Product Name</option>
-                <option value="option1">EZ Innovation Services</option>
+                <option value="">Select Company Name</option>
+                <option value="option1">EZ Innovation</option>
                 <option value="option2">Cargo Hub</option>
                 <option value="option3">FlexiVan</option>
-                <option value="option4">TimeSheet</option>
-                <option value="option5">CM2</option>
+                <option value="option4">IT Hours</option>
+                <option value="option5">Career Munzill</option>
               </select>
             </div>
 
@@ -241,9 +272,12 @@ const AssistantAI = () => {
               </div>
             </div>
 
-            {uploadedFile &&
+            {uploadSuccess ? (
+              <p style={{ fontWeight: "bold" }}>File Uploaded Successfully</p>
+            ) : (
+              uploadedFile &&
               uploadedFileName !==
-                "*Invalid file format, please select txt or pdf" && (
+                "*Invalid file format please select XLS or XLSX" && (
                 <div className="show-uploaded-file">
                   <p className="file-name">{uploadedFileName}</p>
                   <MdDelete
@@ -251,7 +285,8 @@ const AssistantAI = () => {
                     onClick={handleDelete}
                   />
                 </div>
-              )}
+              )
+            )}
 
             <div className="button-container">
               <p
@@ -281,21 +316,25 @@ const AssistantAI = () => {
                   type="text"
                   value={inputText}
                   onChange={handleInputChange}
+                  onClick={handleInputHover}
+                  onKeyDown={handleEnterKey}
                   placeholder="Text Here"
                 />
-                <img
-                  src={SearchIcon}
-                  className="search-icon"
-                  onClick={stopAudio}
-                />
-              </div>
 
-              <div>
                 <img
                   src={MicIcon}
                   className={`mic-icon ${micColor}`}
                   onClick={recordAudio}
                 />
+              </div>
+
+              <div className="tool-tip">
+                <div className="answer-btn" onClick={stopAudio}>
+                  <p>Answer</p>
+                  <img src={SearchIcon} className="search-icon" />
+                </div>
+
+                <span className="tool-tip-text">Click Here To Get Answer</span>
               </div>
             </div>
 
@@ -304,9 +343,9 @@ const AssistantAI = () => {
 
             {/* Question and Answer container */}
             <div className="question-and-answer-container">
-              <button className="answer-btn" onClick={stopAudio}>
+              {/* <button className="answer-btn" onClick={stopAudio}>
                 Answer
-              </button>
+              </button> */}
 
               {transcript && (
                 <p>
@@ -314,9 +353,9 @@ const AssistantAI = () => {
                 </p>
               )}
 
-              {inputText && (
+              {questionText && (
                 <p>
-                  <span>Question (Text Input):</span> {inputText}
+                  <span>Question (Text Input):</span> {questionText}
                 </p>
               )}
 
@@ -338,9 +377,11 @@ const AssistantAI = () => {
         </div>
 
         {/* Bottom Container */}
+        <UserCase2 />
+        {/* <UserCase3 /> */}
       </div>
     </div>
   );
 };
 
-export default AssistantAI;
+export default UserCase1;

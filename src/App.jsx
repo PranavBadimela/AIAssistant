@@ -1,13 +1,9 @@
-import AssistantAI from "./AssistantAI";
-import UserCase2 from "./UserCase2";
-import UserCase3 from "./UserCase3";
+import NavBar from "./NavBar";
 
 const App = () => {
   return (
     <div>
-      <AssistantAI />
-      <UserCase2 />
-      <UserCase3 />
+      <NavBar />
     </div>
   );
 };

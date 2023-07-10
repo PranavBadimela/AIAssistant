@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import Upload from "../assets/Upload.svg";
 import MicIcon from "../assets/MicIcon.svg";
 import SearchIcon from "../assets/searchIcon.svg";
@@ -8,20 +7,16 @@ import "./style.css";
 
 const UserCase2 = () => {
   const [transcript2, setTranscript2] = useState("");
-  // console.log(transcript2)
-
   const [case2InputText, setCase2InputText] = useState("");
-
   const [case2Answer, setCase2Answer] = useState("");
-
   const [recognitionInstance2, setRecognitionInstance2] = useState(null);
-
   const [excelFile, setExcelFile] = useState(null);
   const [selectedExcelFileName, setSelectedExcelFileName] =
     useState("No file chosen");
-
   const [isLoading2, setIsLoading2] = useState(false);
   const [micColor, setMicColor] = useState("");
+  const [uploadMessage, setUploadMessage] = useState(false);
+  const [case2questionText, setCase2QuestionText] = useState("");
 
   useEffect(() => {
     const recognition = new window.webkitSpeechRecognition();
@@ -30,7 +25,7 @@ const UserCase2 = () => {
     recognition.lang = "en-US";
 
     recognition.onresult = (event) => {
-      let finalTranscript = ""; //here Iam storing my speech input EX:- Hi Hello
+      let finalTranscript = "";
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
@@ -39,29 +34,33 @@ const UserCase2 = () => {
         }
       }
 
-      // console.log(transcript);
-      // console.log(finalTranscript);
-
       setTranscript2(finalTranscript);
     };
 
-    // console.log(recognition);
-
     setRecognitionInstance2(recognition);
+
+    window.onbeforeunload = () => {
+      window.speechSynthesis.cancel();
+    };
+
+    return () => {
+      window.onbeforeunload = null;
+    };
   }, []);
 
   const recordAudio2 = () => {
     setCase2Answer("");
     setMicColor("active");
+    setCase2InputText("");
+    setCase2QuestionText("");
     recognitionInstance2.start();
   };
 
   const stopAudio2 = async () => {
     recognitionInstance2.stop();
-    setCase2InputText("");
-    setTranscript2("");
     setMicColor("");
     setIsLoading2(true);
+    setCase2Answer("");
 
     try {
       const response2 = await fetch(
@@ -69,7 +68,6 @@ const UserCase2 = () => {
       );
 
       const data2 = await response2.json();
-      console.log(data2["answer"]);
 
       setCase2Answer(data2["answer"]);
 
@@ -85,9 +83,21 @@ const UserCase2 = () => {
     setIsLoading2(false);
   };
 
+  const handleCase2InputKeyDown = (e) => {
+    if (e.key === "Enter") {
+      stopAudio2();
+    }
+  };
+
   const handleCase2InputChange = (e) => {
     setCase2InputText(e.target.value);
+    setCase2QuestionText(e.target.value);
     setCase2Answer("");
+    setTranscript2("");
+  };
+
+  const handleCase2InputHover = () => {
+    setCase2InputText("");
   };
 
   const handleExcelDrop = (e) => {
@@ -102,10 +112,12 @@ const UserCase2 = () => {
       setSelectedExcelFileName(
         myExcelFile ? myExcelFile.name : "No file uploaded"
       );
+      setUploadMessage(false);
     } else {
       setSelectedExcelFileName(
         "*Invalid file format please select XLS or XLSX"
       );
+      setUploadMessage(false);
     }
   };
 
@@ -137,10 +149,12 @@ const UserCase2 = () => {
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     ) {
       setSelectedExcelFileName(file ? file.name : "No file chosen");
+      setUploadMessage(false);
     } else {
       setSelectedExcelFileName(
         "*Invalid file format please select XLS or XLSX"
       );
+      setUploadMessage(false);
     }
   };
 
@@ -165,12 +179,17 @@ const UserCase2 = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log("Upload successful:", data);
+          console.log("Uploaded successfully:", data);
+          setUploadMessage(true);
+          setExcelFile(null);
+          setSelectedExcelFileName("No file chosen");
         } else {
           console.log("Upload failed:");
+          setUploadMessage(false);
         }
       } catch (error) {
         console.log(error);
+        setUploadMessage(false);
       }
     } else {
       console.log("Invalid file format");
@@ -181,12 +200,10 @@ const UserCase2 = () => {
     <div className="case2-container">
       <div className="main-assistant-cas2-container">
         <p className="title-text" style={{ marginTop: "5px" }}>
-          Use Case2
+          Use Case 2 <span className="suffix-text">(XLS Files)</span>
         </p>
         <div className="bottom-container">
           <div className="case2-left-upload-container">
-            <p className="title-text">Upload Excel Files</p>
-
             <div
               className="case2-drag-and-drop-container"
               onDrop={handleExcelDrop}
@@ -213,7 +230,10 @@ const UserCase2 = () => {
               </div>
             </div>
 
-            {excelFile &&
+            {uploadMessage ? (
+              <p style={{ fontWeight: "bold" }}>File Uploaded Successfully</p>
+            ) : (
+              excelFile &&
               selectedExcelFileName !==
                 "*Invalid file format please select XLS or XLSX" && (
                 <div className="show-uploaded-file">
@@ -223,7 +243,8 @@ const UserCase2 = () => {
                     onClick={handleDeleteExcelFile}
                   />
                 </div>
-              )}
+              )
+            )}
 
             <div className="button-container">
               <p
@@ -251,37 +272,33 @@ const UserCase2 = () => {
                   type="text"
                   value={case2InputText}
                   onChange={handleCase2InputChange}
-                  placeholder="Search Here"
+                  onKeyDown={handleCase2InputKeyDown}
+                  onClick={handleCase2InputHover}
+                  placeholder="Text Here"
                 />
-                <img
-                  src={SearchIcon}
-                  className="search-icon"
-                  onClick={stopAudio2}
-                />
-              </div>
 
-              <div>
                 <img
                   src={MicIcon}
                   className={`mic-icon ${micColor}`}
                   onClick={recordAudio2}
                 />
               </div>
+
+              <div className="tool-tip">
+                <div className="answer-btn" onClick={stopAudio2}>
+                  <p>Answer</p>
+                  <img src={SearchIcon} className="search-icon" />
+                </div>
+
+                <span className="tool-tip-text">Click Here To Get Answer</span>
+              </div>
             </div>
 
             <div className="hr-line"></div>
 
-            <button className="answer-btn" onClick={stopAudio2}>
+            {/* <button className="answer-btn" onClick={stopAudio2}>
               Answer
-            </button>
-
-            {isLoading2 && (
-              <div className="loader">
-                <div className="dot"></div>
-                <div className="dot"></div>
-                <div className="dot"></div>
-              </div>
-            )}
+            </button> */}
 
             {transcript2 && (
               <p>
@@ -289,10 +306,20 @@ const UserCase2 = () => {
               </p>
             )}
 
-            {case2InputText && (
-              <p>
-                <span>Question (Text Input):</span> {case2InputText}
-              </p>
+            {case2questionText && (
+              <div>
+                <p>
+                  <span>Question (Text Input):</span> {case2questionText}
+                </p>
+              </div>
+            )}
+
+            {isLoading2 && (
+              <div className="loader">
+                <div className="dot"></div>
+                <div className="dot"></div>
+                <div className="dot"></div>
+              </div>
             )}
 
             {case2Answer && (
